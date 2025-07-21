@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scratch to Reveal</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #fff9f9;
+      padding: 50px;
+    }
+    #scratchCanvas {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      cursor: grab;
+    }
+    #reveal-message {
+      display: none;
+      font-size: 26px;
+      color: #cc0066;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎁 Scratch the card below 🎁</h2>
+  <canvas id="scratchCanvas" width="300" height="150"></canvas>
+  <div id="reveal-message">👶 Baby is on its way! 🎉</div>
+
+  <script>
+(() => {
+  const canvas = document.getElementById('scratchCanvas');
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#cccccc';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let isDrawing = false;
+  let messageShown = false;
+
+  canvas.addEventListener('mousedown', () => isDrawing = true);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mousemove', scratch);
+
+  function scratch(e) {
+    if (!isDrawing || messageShown) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    checkReveal();
+  }
+
+  function checkReveal() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let transparentPixels = 0;
+
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      if (imageData.data[i + 3] === 0) {
+        transparentPixels++;
+      }
+    }
+
+    const percentCleared = (transparentPixels / (canvas.width * canvas.height)) * 100;
+
+    if (percentCleared > 40 && !messageShown) {
+      showMessage();
+      messageShown = true;
+    }
+  }
+
+  function showMessage() {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#cc0066";
+    ctx.font = "bold 20px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("👶 Baby is on its way!", canvas.width / 2, canvas.height / 2 + 8);
+  }
+})();
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scratch to Reveal</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #fff9f9;
+      padding: 50px;
+    }
+    #scratchCanvas {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Fill gray scratch layer
+    ctx.fillStyle = '#cccccc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    let isDrawing = false;
+    let messageShown = false;
+
+    canvas.addEventListener('mousedown', () => isDrawing = true);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mousemove', scratch);
+
+    function scratch(e) {
+      if (!isDrawing || messageShown) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      checkReveal();
+    }
+
+    function checkReveal() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let transparentPixels = 0;
+
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        if (imageData.data[i + 3] === 0) {
+          transparentPixels++;
+        }
+      }
+
+      const percentCleared = (transparentPixels / (canvas.width * canvas.height)) * 100;
+
+      if (percentCleared > 40 && !messageShown) {
+        showMessage();
+        messageShown = true;
+      }
+    }
+
+    function showMessage() {
+      // Reset blending mode so text appears properly
+      ctx.globalCompositeOperation = 'source-over';
+
+      // White background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Baby message
+      ctx.fillStyle = "#cc0066";
+      ctx.font = "bold 20px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("👶 Baby is on its way!", canvas.width / 2, canvas.height / 2 + 8);
+    }
+  </script>
+</body>
+</html>
