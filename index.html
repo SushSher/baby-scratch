@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scratch to Reveal</title>
+  <title>Scratch Card Surprise</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -13,15 +13,18 @@
     }
 
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       color: #d63384;
       font-weight: bold;
-      display: flex;
+      margin-bottom: 25px;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+      gap: 12px;
+      background: #fff0f5;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
 
     #scratch-container {
@@ -50,7 +53,7 @@
   </style>
 </head>
 <body>
-  <h1>🎁 Scratch the card below 🎁</h1>
+  <h1>🎁 Scratch the card 🎁</h1>
 
   <div id="scratch-container">
     <div id="message">👶 Baby is on its way!</div>
@@ -65,7 +68,6 @@
     function resizeCanvas() {
       canvas.width = container.offsetWidth;
       canvas.height = container.offsetHeight;
-
       ctx.fillStyle = "#cccccc";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
@@ -84,7 +86,6 @@
 
     function draw(e) {
       if (!isDrawing) return;
-
       const { x, y } = getPosition(e);
       ctx.globalCompositeOperation = "destination-out";
       ctx.beginPath();
