@@ -1,118 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scratch Card Surprise</title>
+  <meta charset="UTF-8">
+  <title>Scratch Surprise</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playlist+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unna:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
+
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #fff5f8;
-      text-align: center;
-      padding: 30px 10px;
-    }
-
-    h1 {
-      font-size: 28px;
-      color: #d63384;
-      font-weight: bold;
-      margin-bottom: 25px;
-      display: inline-flex;
-      align-items: center;
+      margin: 0;
+      background: #eee;
+      display: flex;
       justify-content: center;
-      gap: 12px;
-      background: #fff0f5;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      align-items: center;
+      height: 100vh;
+      font-family: 'Unna', serif;
     }
 
-    #scratch-container {
+    .scratchHeading {
+      font-family: 'Yeseva One', cursive;
+      font-size: 32px;
+      color: #7c6446;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #card {
       position: relative;
-      display: inline-block;
-      margin-top: 20px;
+      width: 768px;
+      height: 960px;
+      background: url('background.jpeg') no-repeat center/cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    #message {
-      font-size: 22px;
-      font-weight: bold;
-      color: #d63384;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    #scratch-canvas {
+    #scratchCanvas {
       position: absolute;
-      top: 0;
-      left: 0;
-      cursor: pointer;
-      border-radius: 12px;
+      top: 400px;
+      left: 250px;
+      width: 250px;
+      height: 120px;
+      z-index: 2;
+      cursor: crosshair;
+      border-radius: 20px;
+    }
+    #scratchBg {
+        position: absolute;
+        top: 400px;
+        left: 250px;
+        width: 250px;
+        height: 120px;
+        background-color: transparent; /* default: transparent */
+        border-radius: 20px;
+        z-index: 1;
+        transition: background-color 0.5s ease;
+        }
+
+    #revealMessage {
+      position: absolute;
+      top: 300px;
+      left: 180px;
+      width: 400px;
+      text-align: center;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .script-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: 30px;
+      color: #5a4634;
+      margin: 5px 0;
+    }
+    .reveal-image {
+        width: 250px; /* Increased size */
+  background-color: #e6d8c6; 
+  margin-top: -70px; /* Move upward */
+  margin-bottom: 20px;
+    }
+
+    .flower-image {
+        margin-bottom: 10px;
+  width: 100px;
+  height: auto;
+  margin-top: 5px;
+}
+
+    .playlist-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: 40px;
+      font-weight: bold;
+      color: #5a4634;
+      letter-spacing: 5px;
+      margin-top: 10px;
+      margin-bottom: 15px; /* add this */
     }
   </style>
 </head>
 <body>
-  <h1>🎁 Scratch the card 🎁</h1>
 
-  <div id="scratch-container">
-    <div id="message">👶 Baby is on its way!</div>
-    <canvas id="scratch-canvas"></canvas>
+<div id="card">
+  <div id="revealMessage">
+    <img src="back_pic.png" alt="Image"  class="reveal-image"  />
+    <div class="playlist-text">Rahul & Carol</div>
+    <div class="script-text">Soon to be family of three</div>
+    <img src="flower_pic.jpg" alt="Flower" class="flower-image">
   </div>
 
-  <script>
-    const canvas = document.getElementById("scratch-canvas");
-    const container = document.getElementById("scratch-container");
-    const ctx = canvas.getContext("2d");
+  <div id="scratchBg"></div> <!-- NEW -->
+  <canvas id="scratchCanvas" width="250" height="100"></canvas>
+</div>
 
-    function resizeCanvas() {
-      canvas.width = container.offsetWidth;
-      canvas.height = container.offsetHeight;
-      ctx.fillStyle = "#cccccc";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+<script>
+  const canvas = document.getElementById('scratchCanvas');
+  const ctx = canvas.getContext('2d');
+  const messageDiv = document.getElementById('revealMessage');
+
+  window.onload = function () {
+    // Fill background for scratch card
+    ctx.fillStyle = '#e6d8c6';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Text inside scratch area
+    ctx.fillStyle = '#7c6446';
+    ctx.font = '35px "Great Vibes", cursive';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Scratch to see what', canvas.width / 2, canvas.height / 2 - 25);
+    ctx.fillText('surprise awaits', canvas.width / 2, canvas.height / 2 + 25);
+  };
+
+  let isDrawing = false;
+
+  function getPointerPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+      y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+    };
+  }
+
+  function scratch(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const pos = getPointerPos(e);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+    ctx.fill();
+    checkScratchPercent();
+  }
+
+  function checkScratchPercent() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let total = imageData.data.length / 4;
+    let cleared = 0;
+
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      if (imageData.data[i + 3] === 0) cleared++;
     }
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    const percent = (cleared / total) * 100;
 
-    let isDrawing = false;
-
-    function getPosition(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-      return { x, y };
+    if (percent > 20) {
+      canvas.remove();
+      messageDiv.style.opacity = 1;
     }
+  }
 
-    function draw(e) {
-      if (!isDrawing) return;
-      const { x, y } = getPosition(e);
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.beginPath();
-      ctx.arc(x, y, 20, 0, 2 * Math.PI);
-      ctx.fill();
-    }
+  // Mouse events
+  canvas.addEventListener('mousedown', () => isDrawing = true);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mousemove', scratch);
 
-    canvas.addEventListener("mousedown", (e) => {
-      isDrawing = true;
-      draw(e);
-    });
+  // Touch events
+  canvas.addEventListener('touchstart', () => isDrawing = true);
+  canvas.addEventListener('touchend', () => isDrawing = false);
+  canvas.addEventListener('touchmove', scratch);
+</script>
 
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", () => isDrawing = false);
-    canvas.addEventListener("mouseleave", () => isDrawing = false);
-
-    canvas.addEventListener("touchstart", (e) => {
-      isDrawing = true;
-      draw(e);
-    });
-
-    canvas.addEventListener("touchmove", (e) => {
-      draw(e);
-      e.preventDefault(); // avoid scroll while scratching
-    });
-
-    canvas.addEventListener("touchend", () => isDrawing = false);
-  </script>
 </body>
 </html>
