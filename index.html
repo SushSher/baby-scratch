@@ -48,11 +48,10 @@
 
     #scratchCanvas {
       position: absolute;
-  top: 280px;
-  left: 220px;
-  width: 300px;      /* Wider */
-  height: 400px;     /* Taller */
-  border-radius: 20px;
+  top: 150px;
+  left: 90px;
+  width: 310px;      /* Wider */
+  height: 500px;     /* Taller */
   z-index: 2;
   cursor: crosshair;
     }
@@ -94,7 +93,7 @@
 
     .script-text {
       font-family: 'Great Vibes', cursive;
-      font-size: 30px;
+      font-size: 15px;
       color: #5a4634;
       margin: 5px 0;
     }
@@ -113,7 +112,7 @@
 
     .playlist-text {
       font-family: 'Great Vibes', cursive;
-      font-size: 40px;
+      font-size: 25px;
       font-weight: bold;
       color: #5a4634;
       letter-spacing: 5px;
@@ -146,8 +145,8 @@
     const ratio = window.devicePixelRatio || 1;
     // Fill background for scratch card
     // Set desired CSS size
-  const cssWidth = 300;
-  const cssHeight = 400;
+  const cssWidth = 210;
+  const cssHeight = 230;
 
   // Set actual pixel size for clarity on high-DPI
   canvas.width = cssWidth * ratio;
@@ -163,7 +162,7 @@
   ctx.fillRect(0, 0, cssWidth, cssHeight);
 
   ctx.fillStyle = '#7c6446';
-  ctx.font = '45px "Great Vibes", cursive';
+  ctx.font = '35px "Great Vibes", cursive';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('Scratch to see what', cssWidth / 2, cssHeight / 2 - 20);
