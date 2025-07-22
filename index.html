@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <meta charset="UTF-8">
   <title>Scratch Surprise</title>
 
@@ -9,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playlist+Script&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Unna:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
-
+  <link rel="preload" as="image" href="reveal_image.jpeg">
   <style>
     body {
       margin: 0;
@@ -18,6 +20,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
       font-family: 'Unna', serif;
     }
 
@@ -31,21 +34,27 @@
 
     #card {
       position: relative;
-      width: 768px;
-      height: 960px;
-      background: url('background.jpeg') no-repeat center/cover;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  width: 90vw;
+  max-width: 768px;
+  height: 90vh;
+  max-height: 960px;
+  background: url('background.jpeg') no-repeat center/cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border-radius: 15px;
+  overflow: hidden;
     }
+
+    
 
     #scratchCanvas {
       position: absolute;
-      top: 400px;
-      left: 250px;
-      width: 250px;
-      height: 120px;
-      z-index: 2;
-      cursor: crosshair;
-      border-radius: 20px;
+  top: 280px;
+  left: 220px;
+  width: 300px;      /* Wider */
+  height: 400px;     /* Taller */
+  border-radius: 20px;
+  z-index: 2;
+  cursor: crosshair;
     }
     #scratchBg {
         position: absolute;
@@ -57,18 +66,31 @@
         border-radius: 20px;
         z-index: 1;
         transition: background-color 0.5s ease;
-        }
+        } 
 
     #revealMessage {
       position: absolute;
-      top: 300px;
-      left: 180px;
-      width: 400px;
-      text-align: center;
-      z-index: 1;
-      opacity: 0;
-      transition: opacity 0.6s ease;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
     }
+
+    #bgReveal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('reveal_image.jpeg') no-repeat center/cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 0;
+}
 
     .script-text {
       font-family: 'Great Vibes', cursive;
@@ -78,7 +100,6 @@
     }
     .reveal-image {
         width: 250px; /* Increased size */
-  background-color: #e6d8c6; 
   margin-top: -70px; /* Move upward */
   margin-bottom: 20px;
     }
@@ -96,7 +117,7 @@
       font-weight: bold;
       color: #5a4634;
       letter-spacing: 5px;
-      margin-top: 10px;
+      margin-top: 20px;
       margin-bottom: 15px; /* add this */
     }
   </style>
@@ -104,15 +125,16 @@
 <body>
 
 <div id="card">
+  <div id="bgReveal"></div>
   <div id="revealMessage">
-    <img src="back_pic.png" alt="Image"  class="reveal-image"  />
+    <!-- <img src="Baby_20250721_164041_0000.svg" alt="Image"  class="reveal-image"  /> -->
     <div class="playlist-text">Rahul & Carol</div>
     <div class="script-text">Soon to be family of three</div>
-    <img src="flower_pic.jpg" alt="Flower" class="flower-image">
+    <!-- <img src="flower_pic.jpg" alt="Flower" class="flower-image"> -->
   </div>
 
   <div id="scratchBg"></div> <!-- NEW -->
-  <canvas id="scratchCanvas" width="250" height="100"></canvas>
+  <canvas id="scratchCanvas" ></canvas>
 </div>
 
 <script>
@@ -121,17 +143,32 @@
   const messageDiv = document.getElementById('revealMessage');
 
   window.onload = function () {
+    const ratio = window.devicePixelRatio || 1;
     // Fill background for scratch card
-    ctx.fillStyle = '#e6d8c6';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Set desired CSS size
+  const cssWidth = 300;
+  const cssHeight = 400;
 
-    // Text inside scratch area
-    ctx.fillStyle = '#7c6446';
-    ctx.font = '35px "Great Vibes", cursive';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Scratch to see what', canvas.width / 2, canvas.height / 2 - 25);
-    ctx.fillText('surprise awaits', canvas.width / 2, canvas.height / 2 + 25);
+  // Set actual pixel size for clarity on high-DPI
+  canvas.width = cssWidth * ratio;
+  canvas.height = cssHeight * ratio;
+  canvas.style.width = cssWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+
+  // Scale drawing for high DPI
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+  // Fill and draw text
+  ctx.fillStyle = '#e6d8c6';
+  ctx.fillRect(0, 0, cssWidth, cssHeight);
+
+  ctx.fillStyle = '#7c6446';
+  ctx.font = '45px "Great Vibes", cursive';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Scratch to see what', cssWidth / 2, cssHeight / 2 - 20);
+  ctx.fillText('surprise awaits', cssWidth / 2, cssHeight / 2 + 20);
+
   };
 
   let isDrawing = false;
@@ -167,8 +204,15 @@
     const percent = (cleared / total) * 100;
 
     if (percent > 20) {
-      canvas.remove();
-      messageDiv.style.opacity = 1;
+      canvas.style.pointerEvents = 'none';  // Disable scratching
+  messageDiv.style.opacity = 1;         // Show hidden message
+
+  //document.getElementById('card').style.backgroundImage = "url('WhatsApp Image 2025-07-21 at 5.05.57 PM.jpeg')";
+      document.getElementById('bgReveal').style.opacity = 1;
+
+    // Optional: Clear the scratch area
+    canvas.style.display = 'none';
+
     }
   }
 
