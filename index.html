@@ -53,15 +53,19 @@
         max-width: 768px;
         height: 90vh;
         max-height: 960px;
-        background: url('background.jpeg') no-repeat center/cover;
+        background-image: url('background.jpeg');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         border-radius: 15px;
         overflow: hidden;
+        margin: 0 auto; /* Center horizontally */
       }
 
       #scratchCanvas {
           position: absolute;
-          top:40%;
+          top:55%;
           left: 45%;
           transform: translate(-50%, -50%);
           width: 70vw;           /* responsive width */
@@ -98,13 +102,16 @@
       }
 
       #container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;            /* Full viewport height */
-        width: 100vw;             /* Full viewport width */
-        position: relative;
-        overflow: hidden;
+        z-index: 2;
       }
 
       #bgReveal {
@@ -193,11 +200,10 @@
     ctx.fillRect(0, 0, cssWidth, cssHeight);
 
     ctx.fillStyle = '#7c6446';
-    ctx.font = '30px "Great Vibes", cursive';
+    ctx.font = '35px "Great Vibes", cursive';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('Scratch to see what', cssWidth / 2, cssHeight / 2 - 20);
-    ctx.fillText('surprise awaits', cssWidth / 2, cssHeight / 2 + 20);
+    ctx.fillText('Scratch Here', cssWidth / 2, cssHeight / 2 - 20);
 
     };
 
