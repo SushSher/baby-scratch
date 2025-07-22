@@ -91,20 +91,16 @@
     }
 
     #bgReveal {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('reveal_image.jpeg') no-repeat center center;
+      width: 100vw;
+      height: 100vh;
+      background: url('reveal_image.jpeg') no-repeat center center fixed; /* use same image */
       background-size: cover;
       opacity: 0;
       transition: opacity 1s ease;
       z-index: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
     }
 
     .script-text {
